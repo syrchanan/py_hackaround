@@ -1,0 +1,95 @@
+# Import libraries ----
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load("tidyverse", "timetk", "tidymodels", "modeltime", "janitor",
+               "lubridate")
+set.seed(8675309)
+
+# Data manipulation and prep ----
+
+fin_prices <- read_csv("../data/fin_data.csv") %>% clean_names()
+
+fin_prices %>% 
+    plot_time_series(datetime, adj_close)
+
+fin_prices %>% 
+  select(datetime, adj_close) -> prep_fin
+
+splits <- time_series_split(
+  prep_fin,
+  assess = 5,
+  cumulative = T
+)
+
+model_fit_arima_no_boost <- arima_reg() %>%
+  set_engine(engine = "auto_arima") %>%
+  fit(adj_close ~ datetime, data = training(splits))
+
+model_fit_arima_boosted <- arima_boost(
+  min_n = 2,
+  learn_rate = 0.015
+) %>%
+  set_engine(engine = "auto_arima_xgboost") %>%
+  fit(adj_close ~ datetime + as.numeric(datetime) + hour(datetime) + minute(datetime),
+      data = training(splits))
+
+model_fit_ets <- exp_smoothing() %>%
+  set_engine(engine = "ets") %>%
+  fit(adj_close ~ datetime, data = training(splits))
+
+model_fit_prophet <- prophet_reg() %>%
+  set_engine(engine = "prophet") %>%
+  fit(adj_close ~ datetime, data = training(splits))
+
+# Model Table ----
+
+model_tbl <- modeltime_table(
+  model_fit_arima_no_boost,
+  model_fit_arima_boosted,
+  model_fit_ets,
+  model_fit_prophet
+)
+
+calib_tbl <- model_tbl %>% 
+  modeltime_calibrate(testing(splits))
+
+acc_tbl <- modeltime_accuracy(calib_tbl)
+
+acc_tbl %>% table_modeltime_accuracy()
+
+test_forecast <- calib_tbl %>% 
+  modeltime_forecast(
+    new_data = testing(splits),
+    actual_data = prep_fin
+  )
+
+test_forecast %>% 
+  plot_modeltime_forecast()
+
+future_forecast <- calib_tbl %>% 
+  modeltime_refit(prep_fin) %>% 
+  modeltime_forecast(
+    h = 12,
+    actual_data = prep_fin
+  )
+
+future_forecast %>% 
+  plot_modeltime_forecast()
+
+# Save data out to csv ----
+
+future_forecast %>% 
+  filter(!is.na(.model_id)) %>% 
+  select(.index:.conf_hi) %>%
+  group_by(.index) %>% 
+  summarise_all(mean) -> fin_pred_out
+  
+ggplot()+
+  geom_line(data = fin_prices, mapping = aes(x = datetime, y = adj_close))+
+  geom_line(data = fin_pred_out, mapping = aes(x = .index, y = .value, color = "red"))
+
+fin_pred_out %>% 
+  set_names(c("Datetime", "Adj Close", "Lower Bound", "Upper Bound")) %>% 
+  write_csv("../data/fin_forecast.csv")
+
+fin_pred_out

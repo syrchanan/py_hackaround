@@ -1,0 +1,26 @@
+{
+    "id": "7D3A17E1",
+    "path": "C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/separate_steps/modeling.R",
+    "project_path": "modeling.R",
+    "type": "r_source",
+    "hash": "2127447100",
+    "contents": "",
+    "dirty": false,
+    "created": 1679013064133.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "81,32",
+        "scrollLine": "57"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1679158004,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1679158004102,
+    "read_only": false,
+    "read_only_alternatives": []
+}
