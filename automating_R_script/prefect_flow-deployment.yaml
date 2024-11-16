@@ -3,24 +3,24 @@
 ###
 name: test_flow
 description: null
-version: 8698f52ee8b85008f0f033ced052d269
+version: d3803b91ddf894c4944dff6b81269726
 # The work queue that will handle this deployment's runs
 work_queue_name: default
-work_pool_name: null
+work_pool_name: default-agent-pool
 tags: []
-parameters: 
-  tickers: BTC-USD
-  period: 6h
-  interval: 5m
-  path: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_data.csv
-  r_path: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/separate_steps/modeling.R
-  forecast_path: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_forecast.csv
+parameters: {}
 schedule:
-  interval: 120.0
-  anchor_date: '2023-03-19T00:58:50.772094+00:00'
+  interval: 60.0
+  anchor_date: '2024-01-10T02:30:57.636618+00:00'
   timezone: UTC
-is_schedule_active: null
+is_schedule_active: true
 infra_overrides: {}
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: Financial Data Pipeline + Forecast
+manifest_path: null
 infrastructure:
   type: process
   env: {}
@@ -29,14 +29,11 @@ infrastructure:
   command: null
   stream_output: true
   working_dir: null
+  _block_document_id: 2e69e2f0-b258-4d89-9486-86e9de57e8e1
+  _block_document_name: anonymous-f26eea86-2661-4219-97e4-f52d2f4f5b98
+  _is_anonymous: true
   block_type_slug: process
   _block_type_slug: process
-
-###
-### DO NOT EDIT BELOW THIS LINE
-###
-flow_name: Financial Data Pipeline + Forecast
-manifest_path: null
 storage: null
 path: C:\Users\cdawg\git_repos\py_hackaround\automating_R_script
 entrypoint: workflow\modeltime_forecast.py:prefect_flow
@@ -58,16 +55,16 @@ parameter_openapi_schema:
       position: 2
     path:
       title: path
-      default: ../data/fin_data.csv
+      default: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_data.csv
       position: 3
     r_path:
       title: r_path
-      default: ../separate_steps/modeling.R
+      default: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/separate_steps/modeling.R
       position: 4
     forecast_path:
       title: forecast_path
-      default: ../data/fin_forecast.csv
+      default: C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_forecast.csv
       position: 5
   required: null
   definitions: null
-timestamp: '2023-03-19T00:58:50.772094+00:00'
+timestamp: '2024-01-10T02:30:57.636618+00:00'

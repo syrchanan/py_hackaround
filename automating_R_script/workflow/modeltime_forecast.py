@@ -61,9 +61,9 @@ def prefect_flow(
     tickers = "BTC-USD",
     period = "6h",
     interval = "5m",
-    path = "../data/fin_data.csv",
-    r_path = "../separate_steps/modeling.R",
-    forecast_path = "../data/fin_forecast.csv"
+    path = "C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_data.csv",
+    r_path = "C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/separate_steps/modeling.R",
+    forecast_path = "C:/Users/cdawg/git_repos/py_hackaround/automating_R_script/data/fin_forecast.csv"
 ):
     print(f">>> Extracting financial information of {tickers}")
     fin_df = extract_fin_prices(ticker = tickers, period = period, interval = interval)
@@ -93,5 +93,5 @@ if __name__ == "__main__":
 # prefect deployment apply prefect_flow-deployment.yaml
 # prefect deployment ls
 # prefect deployment run "Financial Data Pipeline + Forecast/test_flow"
-# prefect orion start
+# prefect orion start (prefect server start) [orion was deprecasted in favor of server]
 # prefect agent start --work-queue "default"
